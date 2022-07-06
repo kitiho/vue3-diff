@@ -129,49 +129,50 @@ exports.diffArray = (c1, c2, { mountElement, patch, unmount, move }) => {
       }
     }
   }
-}
 
-function getSequence(arr) {
-  // 返回lis的路径
-  const lis = [0]
-  const len = arr.length
-  const record = arr.slice()
-  for (let i = 0; i < len; i++) {
-    const arrI = arr[i]
-    if (arrI !== 0) {
-      const last = lis[lis.length - 1]
-      if (arrI > arr[last]) {
-        record[i] = last
-        lis.push(i)
-        continue
-      }
-      // 二分插入
-      let left = 0
-      let right = lis.length - 1
-      while (left < right) {
-        const mid = (left + right) >> 1
-        if (arr[lis[mid]] < arrI) {
-          //  arrI在右边
-          left = mid + 1
+  function getSequence(arr) {
+    // 返回lis的路径
+    const lis = [0]
+    const len = arr.length
+    const record = arr.slice()
+    for (let i = 0; i < len; i++) {
+      const arrI = arr[i]
+      if (arrI !== 0) {
+        const last = lis[lis.length - 1]
+        if (arrI > arr[last]) {
+          record[i] = last
+          lis.push(i)
+          continue
         }
-        else {
-          right = mid
+        // 二分插入
+        let left = 0
+        let right = lis.length - 1
+        while (left < right) {
+          const mid = (left + right) >> 1
+          if (arr[lis[mid]] < arrI) {
+            //  arrI在右边
+            left = mid + 1
+          }
+          else {
+            right = mid
+          }
         }
-      }
-      // 从lis中找比arrI大的最小的数
-      if (arrI < arr[lis[left]]) {
-        if (left > 0)
-          record[i] = lis[left - 1]
+        // 从lis中找比arrI大的最小的数
+        if (arrI < arr[lis[left]]) {
+          if (left > 0)
+            record[i] = lis[left - 1]
 
-        lis[left] = i
+          lis[left] = i
+        }
       }
     }
+    let i = lis.length
+    let last = lis[i - 1]
+    while (i-- > 0) {
+      lis[i] = last
+      last = record[last]
+    }
+    return lis
   }
-  let i = lis.length
-  let last = lis[i - 1]
-  while (i-- > 0) {
-    lis[i] = last
-    last = record[last]
-  }
-  return lis
 }
+
